@@ -64,9 +64,6 @@ public class CustomHashMap<K, V> {
 
     private int getHash (K key){
         return key.hashCode() % this.hashMapSize;
-        // This function converts somehow the key to an integer between 0 and bucketSize
-        // In C# GetHashCode(), in Java hashCode() is a function of Object, so all non-primitive types
-        // can easily be converted to an integer.
     }
 
     private void resizeIfNeeded () {
@@ -75,6 +72,4 @@ public class CustomHashMap<K, V> {
         // if it holds less elements than bucketSize / 2, destroy and recreate it
         // with half size of the elements array.
     }
-
-    // + other functions, like clearAll(), delete(),..
 }
