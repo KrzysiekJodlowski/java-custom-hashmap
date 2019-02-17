@@ -14,10 +14,16 @@ class CustomHashMapTest {
     }
 
     @Test
-    public void testAddingToHashMap() throws CustomHashMapKeyException {
+    public void testAddingToHashMap() {
 
         assertNull(this.customHashMap.add("Key", 27));
-        assertNull(this.customHashMap.add(28, "Value"));
+    }
+
+    @Test
+    public void testAddingToHashMapReturningOldValue() {
+
+        assertNull(this.customHashMap.add("Key", 27));
+        assertEquals(27, this.customHashMap.add("Key", 28));
     }
 
     @Test
@@ -29,6 +35,14 @@ class CustomHashMapTest {
     }
 
     @Test
+    public void testIfThrowsCustomHashMapKeyExceptionWhenGettingWithWrongKey() throws CustomHashMapKeyException {
+
+        this.customHashMap.add("Key", 27);
+
+        assertThrows(CustomHashMapKeyException.class, ()-> this.customHashMap.getValue("AnotherKey"));
+    }
+
+    @Test
     public void testRemovingData() throws CustomHashMapKeyException {
 
         this.customHashMap.add("Key", 27);
@@ -37,13 +51,29 @@ class CustomHashMapTest {
     }
 
     @Test
-    public void testIsEmpty() {
+    public void testIfThrowsCustomHashMapKeyExceptionWhenRemovingNoExistingData() throws CustomHashMapKeyException {
+
+        this.customHashMap.add("Key", 27);
+
+        assertThrows(CustomHashMapKeyException.class, ()-> this.customHashMap.remove("AnotherKey"));
+    }
+
+    @Test
+    public void testIsEmptyWhenEmptyHashMap() {
 
         assertTrue(this.customHashMap.isEmpty());
     }
 
     @Test
-    public void testClearingHashMap() throws CustomHashMapKeyException {
+    public void testIsNotEmptyWhenNotEmptyHashMap() {
+
+        this.customHashMap.add("Key", 27);
+
+        assertFalse(this.customHashMap.isEmpty());
+    }
+
+    @Test
+    public void testClearingHashMap() {
 
         this.customHashMap.add("Key", 27);
         this.customHashMap.add("Another key", 28);
@@ -54,7 +84,13 @@ class CustomHashMapTest {
     }
 
     @Test
-    public void testGettingSizeOfAHashMap() throws CustomHashMapKeyException {
+    public void testGettingSizeOfEmptyHashMap() {
+
+        assertEquals(0, this.customHashMap.size());
+    }
+
+    @Test
+    public void testGettingSizeOfNotEmptyHashMap() {
 
         this.customHashMap.add("Key", 27);
         this.customHashMap.add("Another key", 28);
