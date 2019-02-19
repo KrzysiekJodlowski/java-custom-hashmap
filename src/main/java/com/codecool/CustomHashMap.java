@@ -1,15 +1,13 @@
 package com.codecool;
 
-import java.util.LinkedList;
-
 
 public class CustomHashMap<K, V> {
 
     private int hashMapSize = 16;
-    private LinkedList<KeyValue>[] elements;
+    private CustomLinkedList<KeyValue>[] elements;
 
     public CustomHashMap() {
-        this.elements = (LinkedList<KeyValue>[]) new LinkedList<?>[this.hashMapSize];
+        this.elements = (CustomLinkedList<KeyValue>[]) new CustomLinkedList<?>[this.hashMapSize];
     }
 
     public V add(K key, V value) {
@@ -17,17 +15,17 @@ public class CustomHashMap<K, V> {
         int position = getHash(key);
 
         if (elements[position] != null) {
-            LinkedList<KeyValue> currentList = elements[position];
+            CustomLinkedList<KeyValue> currentList = elements[position];
 
-            for (KeyValue keyValue : currentList) {
-                if (keyValue.getKey().equals(key)) {
-                    V oldValue = (V) keyValue.getValue();
-                    keyValue.setValue(value);
+            for (int index = 0; index < currentList.size(); index++) {
+                if (currentList.get(index).getKey().equals(key)) {
+                    V oldValue = (V) currentList.get(index).getValue();
+                    currentList.get(index).setValue(value);
                     return oldValue;
                 }
             }
         }
-        elements[position] = new LinkedList<>();
+        elements[position] = new CustomLinkedList<>();
         elements[position].add(new KeyValue(key, value));
         resizeIfNeeded();
         return null;
@@ -36,13 +34,13 @@ public class CustomHashMap<K, V> {
     public V getValue (K key) throws CustomHashMapKeyException {
 
         int position = getHash(key);
-        LinkedList<KeyValue> currentList = elements[position];
+        CustomLinkedList<KeyValue> currentList = elements[position];
         V value = null;
 
         if (currentList != null) {
-            for (KeyValue keyValue : currentList) {
-                if (keyValue.getKey().equals(key)) {
-                    value = (V) keyValue.getValue();
+            for (int index = 0; index < currentList.size(); index++) {
+                if (currentList.get(index).getKey().equals(key)) {
+                    value = (V) currentList.get(index).getValue();
                 }
             }
         }
@@ -55,14 +53,14 @@ public class CustomHashMap<K, V> {
     public V remove(K key) throws CustomHashMapKeyException {
 
         int position = getHash(key);
-        LinkedList<KeyValue> currentList = elements[position];
+        CustomLinkedList<KeyValue> currentList = elements[position];
         V value = null;
 
         if (currentList != null) {
-            for (KeyValue keyValue : currentList) {
-                if (keyValue.getKey().equals(key)) {
-                    currentList.remove(keyValue);
-                    value = (V) keyValue.getValue();
+            for (int index = 0; index < currentList.size(); index++) {
+                if (currentList.get(index).getKey().equals(key)) {
+                    value = (V) currentList.get(index).getValue();
+                    currentList.remove(index);
                 }
             }
         }
@@ -75,7 +73,7 @@ public class CustomHashMap<K, V> {
 
     public boolean isEmpty() {
 
-        for (LinkedList<KeyValue> currentList : this.elements) {
+        for (CustomLinkedList<KeyValue> currentList : this.elements) {
             if (currentList != null) {
                 return false;
             }
@@ -95,9 +93,9 @@ public class CustomHashMap<K, V> {
     public int size() {
         int currentSize = 0;
 
-        for (LinkedList<KeyValue> currentList : this.elements) {
+        for (CustomLinkedList<KeyValue> currentList : this.elements) {
             if (currentList != null) {
-                for (KeyValue keyValue : currentList) {
+                for (int index = 0; index < currentList.size(); index++) {
                     currentSize++;
                 }
             }
@@ -122,19 +120,21 @@ public class CustomHashMap<K, V> {
     }
 
     private void recreateHashMapWithNewSize(int newHashMapSize){
-        LinkedList<KeyValue> keyValuePairs = new LinkedList<>();
+        CustomLinkedList<KeyValue> keyValuePairs = new CustomLinkedList<>();
 
         for (int index = 0; index < this.elements.length; index++) {
             if (this.elements[index] != null) {
-                keyValuePairs.addAll(this.elements[index]);
+                for (int innerIndex = 0; innerIndex < this.elements[index].size(); innerIndex++) {
+                    keyValuePairs.add(this.elements[index].get(innerIndex));
+                }
             }
         }
 
-        this.elements = (LinkedList<KeyValue>[]) new LinkedList<?>[newHashMapSize];
+        this.elements = (CustomLinkedList<KeyValue>[]) new CustomLinkedList<?>[newHashMapSize];
         this.hashMapSize = newHashMapSize;
 
-        for (KeyValue keyValue : keyValuePairs) {
-            this.add((K) keyValue.getKey(), (V) keyValue.getValue());
+        for (int index = 0; index < keyValuePairs.size(); index++) {
+            this.add((K) keyValuePairs.get(index).getKey(), (V) keyValuePairs.get(index).getValue());
         }
     }
 }
