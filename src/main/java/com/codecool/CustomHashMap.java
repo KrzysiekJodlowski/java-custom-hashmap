@@ -1,6 +1,7 @@
 package com.codecool;
 
 
+@SuppressWarnings("unchecked")
 public class CustomHashMap<K, V> {
 
     private int hashMapSize = 16;
@@ -120,18 +121,30 @@ public class CustomHashMap<K, V> {
     }
 
     private void recreateHashMapWithNewSize(int newHashMapSize){
-        CustomLinkedList<KeyValue> keyValuePairs = new CustomLinkedList<>();
-
-        for (int index = 0; index < this.elements.length; index++) {
-            if (this.elements[index] != null) {
-                for (int innerIndex = 0; innerIndex < this.elements[index].size(); innerIndex++) {
-                    keyValuePairs.add(this.elements[index].get(innerIndex));
-                }
-            }
-        }
+        CustomLinkedList<KeyValue> keyValuePairs = copyKeyValuesFromCurrentHashMap();
 
         this.elements = (CustomLinkedList<KeyValue>[]) new CustomLinkedList<?>[newHashMapSize];
         this.hashMapSize = newHashMapSize;
+
+        fillUpNewHashMap(keyValuePairs);
+    }
+
+    private CustomLinkedList<KeyValue> copyKeyValuesFromCurrentHashMap() {
+        CustomLinkedList<KeyValue> keyValuePairs = new CustomLinkedList<>();
+
+        for (int index = 0; index < this.elements.length; index++) {
+            CustomLinkedList<KeyValue> currentList = this.elements[index];
+            
+            if (currentList != null) {
+                for (int innerIndex = 0; innerIndex < currentList.size(); innerIndex++) {
+                    keyValuePairs.add(currentList.get(innerIndex));
+                }
+            }
+        }
+        return keyValuePairs;
+    }
+
+    private void fillUpNewHashMap(CustomLinkedList<KeyValue> keyValuePairs) {
 
         for (int index = 0; index < keyValuePairs.size(); index++) {
             this.add((K) keyValuePairs.get(index).getKey(), (V) keyValuePairs.get(index).getValue());

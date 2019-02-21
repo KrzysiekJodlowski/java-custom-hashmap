@@ -1,6 +1,6 @@
 package com.codecool;
 
-public class CustomLinkedList<T> {
+public class CustomLinkedList<T extends Object> {
 
     private CustomLinkedListNode head;
     private int length;

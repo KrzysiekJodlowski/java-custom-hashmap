@@ -1,6 +1,6 @@
 package com.codecool;
 
-public class CustomLinkedListNode<T> {
+public class CustomLinkedListNode<T extends Object> {
 
     private T data;
     private CustomLinkedListNode pointer;
